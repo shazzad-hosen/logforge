@@ -1,2 +1,2 @@
 # logforge
-LogForge - AI-Powered Log Intelligence Platform
+AI-Powered Log Intelligence Platform

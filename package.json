@@ -1,8 +1,8 @@
 {
   "name": "logforge",
   "version": "1.0.0",
-  "description": "LogForge - AI-Powered Log Intelligence Platform",
-  "main": "index.js",
+  "description": "AI-Powered Log Intelligence Platform",
+  "main": "src/server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts"
   },
@@ -13,14 +13,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/shazzad-hosen/logforge/issues"
   },
   "homepage": "https://github.com/shazzad-hosen/logforge#readme",
   "dependencies": {
     "@fastify/cors": "^11.2.0",
-    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "fastify": "^5.8.5",
     "zod": "^4.4.3"
