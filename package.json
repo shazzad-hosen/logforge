@@ -11,8 +11,8 @@
     "url": "git+https://github.com/shazzad-hosen/logforge.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Shazzad Hosen",
+  "license": "MIT",
   "type": "module",
   "bugs": {
     "url": "https://github.com/shazzad-hosen/logforge/issues"
@@ -25,10 +25,12 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@prisma/client": "^7.8.0",
     "@types/node": "^25.9.1",
     "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.8.3",
+    "prisma": "^7.8.0",
     "tsx": "^4.22.3",
     "typescript": "^6.0.3"
   }
