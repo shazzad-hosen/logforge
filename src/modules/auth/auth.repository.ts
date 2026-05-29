@@ -1,5 +1,4 @@
-import { prisma } from "../../../plugins/prisma.ts";
-
+import { prisma } from "../../plugins/prisma.ts";
 export const findUserByEmail = async (email: string) => {
   return prisma.user.findUnique({
     where: {
