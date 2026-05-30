@@ -8,8 +8,29 @@ datasource db {
 }
 
 model User {
+    id            String         @id @default(cuid())
+    email         String         @unique
+    passwordHash  String
+    role          Role           @default(USER)
+    isVerified    Boolean        @default(false)
+    refreshTokens RefreshToken[]
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime       @updatedAt
+}
+
+enum Role {
+    USER
+    ADMIN
+}
+
+model RefreshToken {
     id        String   @id @default(cuid())
-    email     String   @unique
-    password  String
+    tokenHash String   @unique
+    userAgent String?
+    ipAddress String?
+    isRevoked Boolean  @default(false)
+    expiresAt DateTime
     createdAt DateTime @default(now())
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
