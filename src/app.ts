@@ -14,9 +14,17 @@ app.register(fastifyCookie, {
 
 app.setErrorHandler(errorHandler);
 
+app.setNotFoundHandler((request, reply) => {
+  reply.status(404).send({
+    success: false,
+    statusCode: 404,
+    message: "Page not found",
+  });
+});
+
 app.get("/", async () => {
   return {
-    message: "API is running successfully",
+    message: "Backend API is running successfully",
   };
 });
 
