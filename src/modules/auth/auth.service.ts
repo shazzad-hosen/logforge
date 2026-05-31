@@ -39,12 +39,13 @@ export const registerUser = async (email: string, password: string) => {
   };
 };
 
-export const loginUser = async (
-  email: string,
-  password: string,
-  userAgent: string,
-  ipAddress: string,
-) => {
+export const loginUser = async (data: unknown, userAgent: string) => {
+  const { email, password, ipAddress } = data as {
+    email: string;
+    password: string;
+    ipAddress: string;
+  };
+
   if (!email || !password) {
     throw new ApiError(400, "Email and password are required");
   }
@@ -76,5 +77,6 @@ export const loginUser = async (
       email: user.email,
     },
     accessToken,
+    refreshToken,
   };
 };
