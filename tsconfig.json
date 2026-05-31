@@ -9,7 +9,10 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@prisma-client": ["./src/generated/prisma/client.ts"]
+    }
   },
 
   "include": ["src"]
