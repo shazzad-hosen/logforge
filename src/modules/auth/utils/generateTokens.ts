@@ -36,3 +36,17 @@ export const generateRefreshToken = (
 export const generateTokenHash = (token: string) => {
   return crypto.createHash("sha256").update(token).digest("hex");
 };
+
+interface RefreshTokenPayload extends jwt.JwtPayload {
+  id: string;
+}
+
+export const decodeRefreshToken = (token: string): RefreshTokenPayload => {
+  const decoded = jwt.verify(token, ENV.JWT_REFRESH_SECRET);
+
+  if (typeof decoded === "string") {
+    throw new Error("Invalid token payload structure");
+  }
+
+  return decoded as RefreshTokenPayload;
+};
