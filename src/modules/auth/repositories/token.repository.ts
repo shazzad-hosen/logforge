@@ -17,3 +17,18 @@ export const createRefreshToken = async (
     },
   });
 };
+
+export const findRefreshTokenByHash = async (tokenHash: string) => {
+  return prisma.refreshToken.findUnique({
+    where: {
+      tokenHash,
+    },
+    select: {
+      id: true,
+      userId: true,
+      isRevoked: true,
+      tokenHash: true,
+      expiresAt: true,
+    },
+  });
+};

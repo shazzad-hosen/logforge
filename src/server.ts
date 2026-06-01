@@ -1,10 +1,7 @@
 import { app } from "./app.ts";
 import { ENV } from "./config/env.ts";
-import { prisma } from "./plugins/prisma.ts";
 
 const startServer = async () => {
-  await prisma.$connect();
-  console.log("Database connected");
 
   try {
     await app.listen({
