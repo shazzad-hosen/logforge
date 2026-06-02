@@ -2,7 +2,6 @@ import ApiError from "../../utils/ApiError.ts";
 import { hashPassword, comparePassword } from "./utils/bcrypt.ts";
 import { parseToMs } from "./utils/parseToMs.ts";
 import { ENV } from "../../config/env.ts";
-import authenticateRefreshSession from "./middlewares/authenticateRefreshSession.middleware.ts";
 
 import {
   generateAccessToken,
@@ -19,6 +18,7 @@ import {
 import {
   createRefreshToken,
   findRefreshTokenByHash,
+  revokeSessionByTokenHash,
 } from "./repositories/token.repository.ts";
 
 export const registerUser = async (email: string, password: string) => {
@@ -70,7 +70,6 @@ export const loginUser = async (data: unknown, userAgent: string) => {
   const refreshToken = generateRefreshToken(user);
 
   const tokenHash = generateTokenHash(refreshToken);
-
   const expiresAt = new Date(Date.now() + parseToMs(ENV.JWT_REFRESH_EXPIRY));
 
   await createRefreshToken(user.id, tokenHash, expiresAt, userAgent, ipAddress);
@@ -86,7 +85,6 @@ export const loginUser = async (data: unknown, userAgent: string) => {
 };
 
 export const refreshUserToken = async (
-  userId: string,
   existingRefreshToken: string,
   userAgent: string,
   ipAddress: string,
@@ -97,17 +95,24 @@ export const refreshUserToken = async (
     throw new ApiError(403, "Session not found");
   }
 
-  const newAccessToken = generateAccessToken(sessionData);
-};
+  const newAccessToken = generateAccessToken(sessionData.user);
+  const newRefreshToken = generateRefreshToken(sessionData);
 
-/* 
-const generateAccessToken: (user: Omit<{
-    id: string;
-    email: string;
-    passwordHash: string;
-    role: Role;
-    isVerified: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-}, "passwordHash">) => string
-*/
+  const newRefreshHash = generateTokenHash(newRefreshToken);
+  const expiresAt = new Date(Date.now() + parseToMs(ENV.JWT_REFRESH_EXPIRY));
+
+  await revokeSessionByTokenHash(existingRefreshToken);
+
+  await createRefreshToken(
+    sessionData.userId,
+    newRefreshHash,
+    expiresAt,
+    userAgent,
+    ipAddress,
+  );
+
+  return {
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
+  };
+};
