@@ -27,12 +27,26 @@ export const findRefreshTokenByHash = async (tokenHash: string) => {
     select: {
       id: true,
       userId: true,
+      tokenHash: true,
+      isRevoked: true,
+      expiresAt: true,
       user: {
         select: {
           id: true,
           role: true,
         },
       },
+    },
+  });
+};
+
+export const revokeSessionByTokenHash = async (tokenHash: string) => {
+  return prisma.refreshToken.update({
+    where: {
+      tokenHash,
+    },
+    data: {
+      isRevoked: true,
     },
   });
 };

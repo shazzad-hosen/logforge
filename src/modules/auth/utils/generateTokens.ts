@@ -18,9 +18,7 @@ export const generateAccessToken = (
   );
 };
 
-export const generateRefreshToken = (
-  user: Omit<User, "passwordHash">,
-): string => {
+export const generateRefreshToken = (user: Pick<User, "id">): string => {
   return jwt.sign(
     {
       id: user.id,
