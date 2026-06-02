@@ -4,7 +4,7 @@ import { User } from "@prisma-client";
 import crypto from "crypto";
 
 export const generateAccessToken = (
-  user: Omit<User, "passwordHash">,
+  user: Pick<User, "id" | "role">,
 ): string => {
   return jwt.sign(
     {

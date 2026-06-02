@@ -1,3 +1,4 @@
+import { dmmfToRuntimeDataModel } from "@prisma/client/runtime/client";
 import { prisma } from "../../../plugins/prisma.ts";
 
 export const createRefreshToken = async (
@@ -26,9 +27,12 @@ export const findRefreshTokenByHash = async (tokenHash: string) => {
     select: {
       id: true,
       userId: true,
-      isRevoked: true,
-      tokenHash: true,
-      expiresAt: true,
+      user: {
+        select: {
+          id: true,
+          role: true,
+        },
+      },
     },
   });
 };

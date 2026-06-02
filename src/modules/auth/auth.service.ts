@@ -2,6 +2,7 @@ import ApiError from "../../utils/ApiError.ts";
 import { hashPassword, comparePassword } from "./utils/bcrypt.ts";
 import { parseToMs } from "./utils/parseToMs.ts";
 import { ENV } from "../../config/env.ts";
+import authenticateRefreshSession from "./middlewares/authenticateRefreshSession.middleware.ts";
 
 import {
   generateAccessToken,
@@ -15,7 +16,10 @@ import {
   findUserByEmailForAuth,
 } from "./repositories/auth.repository.ts";
 
-import { createRefreshToken } from "./repositories/token.repository.ts";
+import {
+  createRefreshToken,
+  findRefreshTokenByHash,
+} from "./repositories/token.repository.ts";
 
 export const registerUser = async (email: string, password: string) => {
   if (!email || !password) {
@@ -80,3 +84,30 @@ export const loginUser = async (data: unknown, userAgent: string) => {
     refreshToken,
   };
 };
+
+export const refreshUserToken = async (
+  userId: string,
+  existingRefreshToken: string,
+  userAgent: string,
+  ipAddress: string,
+) => {
+  const sessionData = await findRefreshTokenByHash(existingRefreshToken);
+
+  if (!sessionData) {
+    throw new ApiError(403, "Session not found");
+  }
+
+  const newAccessToken = generateAccessToken(sessionData);
+};
+
+/* 
+const generateAccessToken: (user: Omit<{
+    id: string;
+    email: string;
+    passwordHash: string;
+    role: Role;
+    isVerified: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}, "passwordHash">) => string
+*/
