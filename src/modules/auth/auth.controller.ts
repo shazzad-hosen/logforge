@@ -2,7 +2,7 @@ import { ENV } from "../../config/env.ts";
 import { parseToMs } from "./utils/parseToMs.ts";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { registerSchema, loginSchema } from "./auth.schema.ts";
-import { registerUser, loginUser } from "./auth.service.ts";
+import { registerUser, loginUser, refreshUserToken } from "./auth.service.ts";
 
 export const registerUserController = async (
   request: FastifyRequest,
@@ -43,9 +43,11 @@ export const loginUserController = async (
   }
 
   const userAgent = request.headers["user-agent"] || "unknown";
-  const result = await loginUser(parsedData.data, userAgent);
+  const ipAddress = request.ip;
 
-  reply.setCookie("refreshToken", result.refreshToken, {
+  const response = await loginUser(parsedData.data, userAgent, ipAddress);
+
+  reply.setCookie("refreshToken", response.refreshToken, {
     httpOnly: true,
     secure: ENV.NODE_ENV === "production",
     sameSite: "strict",
@@ -57,8 +59,32 @@ export const loginUserController = async (
     success: true,
     message: "Login successful",
     data: {
-      user: result.user,
-      accessToken: result.accessToken,
+      user: response.user,
+      accessToken: response.accessToken,
     },
+  });
+};
+
+export const refreshUserTokenController = async (
+  request: FastifyRequest,
+  reply: FastifyReply,
+) => {
+  const userAgent = request.headers["user-agent"] || "unknown";
+  const ipAddress = request.ip;
+  const refreshToken = request.refreshToken || "unknown";
+
+  const response = await refreshUserToken(refreshToken, userAgent, ipAddress);
+
+  reply.setCookie("refreshToken", response.refreshToken, {
+    httpOnly: true,
+    secure: ENV.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+    maxAge: parseToMs(ENV.JWT_REFRESH_EXPIRY) / 1000,
+  });
+
+  return reply.status(200).send({
+    seccess: true,
+    accessToken: response.accessToken,
   });
 };
