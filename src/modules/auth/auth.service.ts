@@ -43,11 +43,14 @@ export const registerUser = async (email: string, password: string) => {
   };
 };
 
-export const loginUser = async (data: unknown, userAgent: string) => {
-  const { email, password, ipAddress } = data as {
+export const loginUser = async (
+  data: unknown,
+  userAgent: string,
+  ipAddress: string,
+) => {
+  const { email, password } = data as {
     email: string;
     password: string;
-    ipAddress: string;
   };
 
   if (!email || !password) {
