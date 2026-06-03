@@ -2,7 +2,13 @@ import { ENV } from "../../config/env.ts";
 import { parseToMs } from "./utils/parseToMs.ts";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { registerSchema, loginSchema } from "./auth.schema.ts";
-import { registerUser, loginUser, refreshUserToken } from "./auth.service.ts";
+
+import {
+  registerUser,
+  loginUser,
+  refreshUserToken,
+  logoutUser,
+} from "./auth.service.ts";
 
 export const registerUserController = async (
   request: FastifyRequest,
@@ -86,5 +92,26 @@ export const refreshUserTokenController = async (
   return reply.status(200).send({
     seccess: true,
     accessToken: response.accessToken,
+  });
+};
+
+export const logoutUserController = async (
+  request: FastifyRequest,
+  reply: FastifyReply,
+) => {
+  const token = request.refreshToken || "unknown";
+
+  const response = await logoutUser(token);
+
+  reply.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: ENV.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+  });
+
+  return reply.status(200).send({
+    success: true,
+    ...response,
   });
 };

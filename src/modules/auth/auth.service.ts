@@ -119,3 +119,13 @@ export const refreshUserToken = async (
     refreshToken: newRefreshToken,
   };
 };
+
+export const logoutUser = async (incomingRefreshToken: string) => {
+  const hashedRefreshToken = generateTokenHash(incomingRefreshToken);
+
+  const data = await revokeSessionByTokenHash(hashedRefreshToken);
+
+  return {
+    message: "Logged out successfully",
+  };
+};

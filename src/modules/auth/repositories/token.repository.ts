@@ -41,12 +41,14 @@ export const findRefreshTokenByHash = async (tokenHash: string) => {
 };
 
 export const revokeSessionByTokenHash = async (tokenHash: string) => {
-  return prisma.refreshToken.update({
+  const result = prisma.refreshToken.updateMany({
     where: {
       tokenHash,
+      isRevoked: false,
     },
     data: {
       isRevoked: true,
     },
   });
+  return (await result).count;
 };

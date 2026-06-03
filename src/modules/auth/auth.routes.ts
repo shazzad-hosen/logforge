@@ -5,6 +5,7 @@ import {
   registerUserController,
   loginUserController,
   refreshUserTokenController,
+  logoutUserController,
 } from "./auth.controller.ts";
 
 export const authRoutes = async (app: FastifyInstance) => {
@@ -25,5 +26,11 @@ export const authRoutes = async (app: FastifyInstance) => {
     url: "/refresh",
     preHandler: authenticateRefreshSession,
     handler: refreshUserTokenController,
+  });
+
+  app.route({
+    method: "POST",
+    url: "/logout",
+    handler: logoutUserController,
   });
 };
