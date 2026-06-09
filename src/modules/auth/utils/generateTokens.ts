@@ -48,3 +48,18 @@ export const decodeRefreshToken = (token: string): RefreshTokenPayload => {
 
   return decoded as RefreshTokenPayload;
 };
+
+interface AccessTokenPayload extends jwt.JwtPayload {
+  sub: string;
+  role: string;
+}
+
+export const decodeAccessToken = (token: string) => {
+  const decoded = jwt.verify(token, ENV.JWT_ACCESS_SECRET);
+
+  if (typeof decoded === "string") {
+    throw new Error("Invalid token payload structure");
+  }
+
+  return decoded as AccessTokenPayload;
+};

@@ -1,5 +1,14 @@
 import { prisma } from "../../../plugins/prisma.ts";
 
+export const createUser = async (email: string, passwordHash: string) => {
+  return prisma.user.create({
+    data: {
+      email,
+      passwordHash,
+    },
+  });
+};
+
 export const findUserByEmail = async (email: string) => {
   return prisma.user.findUnique({
     where: {
@@ -22,11 +31,15 @@ export const findUserByEmailForAuth = async (email: string) => {
   });
 };
 
-export const createUser = async (email: string, passwordHash: string) => {
-  return prisma.user.create({
-    data: {
-      email,
-      passwordHash,
+export const findUserById = async (id: string) => {
+  return prisma.user.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+      role: true,
+      isVerified: true,
     },
   });
 };
