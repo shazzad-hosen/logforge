@@ -38,7 +38,9 @@ export const findUserById = async (id: string) => {
     },
     select: {
       id: true,
+      email: true,
       role: true,
+      createdAt: true,
       isVerified: true,
     },
   });
