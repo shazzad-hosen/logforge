@@ -8,6 +8,7 @@ import {
   loginUser,
   refreshUserToken,
   logoutUser,
+  getUserData,
 } from "./auth.service.ts";
 
 export const registerUserController = async (
@@ -113,5 +114,17 @@ export const logoutUserController = async (
   return reply.status(200).send({
     success: true,
     ...response,
+  });
+};
+
+export const getUserDataController = async (
+  request: FastifyRequest,
+  reply: FastifyReply,
+) => {
+  const data = await getUserData(request.user as object);
+
+  return reply.status(200).send({
+    success: true,
+    data,
   });
 };

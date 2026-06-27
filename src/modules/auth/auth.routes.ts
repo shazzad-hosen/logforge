@@ -1,11 +1,13 @@
 import { FastifyInstance } from "fastify";
 import authenticateRefreshSession from "./middlewares/authenticateRefreshSession.middleware.ts";
+import authenticateAccessToken from "./middlewares/authenticateAccessToken.middleware.ts";
 
 import {
   registerUserController,
   loginUserController,
   refreshUserTokenController,
   logoutUserController,
+  getUserDataController,
 } from "./auth.controller.ts";
 
 export const authRoutes = async (app: FastifyInstance) => {
@@ -32,5 +34,12 @@ export const authRoutes = async (app: FastifyInstance) => {
     method: "POST",
     url: "/logout",
     handler: logoutUserController,
+  });
+
+  app.route({
+    method: "GET",
+    url: "/me",
+    preHandler: authenticateAccessToken,
+    handler: getUserDataController,
   });
 };

@@ -129,3 +129,9 @@ export const logoutUser = async (incomingRefreshToken: string) => {
     message: "Logged out successfully",
   };
 };
+
+export const getUserData = async (user: object) => {
+  return {
+    user,
+  };
+};
