@@ -88,11 +88,13 @@ export const loginUser = async (
 };
 
 export const refreshUserToken = async (
-  existingRefreshToken: string,
+  incomingRefreshToken: string,
   userAgent: string,
   ipAddress: string,
 ) => {
-  const sessionData = await findRefreshTokenByHash(existingRefreshToken);
+  const hashedRefreshToken = generateTokenHash(incomingRefreshToken);
+
+  const sessionData = await findRefreshTokenByHash(hashedRefreshToken);
 
   if (!sessionData) {
     throw new ApiError(403, "Session not found");
@@ -104,7 +106,7 @@ export const refreshUserToken = async (
   const newRefreshHash = generateTokenHash(newRefreshToken);
   const expiresAt = new Date(Date.now() + parseToMs(ENV.JWT_REFRESH_EXPIRY));
 
-  await revokeSessionByTokenHash(existingRefreshToken);
+  await revokeSessionByTokenHash(incomingRefreshToken);
 
   await createRefreshToken(
     sessionData.userId,
@@ -123,7 +125,7 @@ export const refreshUserToken = async (
 export const logoutUser = async (incomingRefreshToken: string) => {
   const hashedRefreshToken = generateTokenHash(incomingRefreshToken);
 
-  const data = await revokeSessionByTokenHash(hashedRefreshToken);
+  await revokeSessionByTokenHash(hashedRefreshToken);
 
   return {
     message: "Logged out successfully",

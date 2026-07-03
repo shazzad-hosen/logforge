@@ -78,9 +78,13 @@ export const refreshUserTokenController = async (
 ) => {
   const userAgent = request.headers["user-agent"] || "unknown";
   const ipAddress = request.ip;
-  const refreshToken = request.refreshToken || "unknown";
+  const rawRefreshToken = request.cookies.refreshToken || "unknown";
 
-  const response = await refreshUserToken(refreshToken, userAgent, ipAddress);
+  const response = await refreshUserToken(
+    rawRefreshToken,
+    userAgent,
+    ipAddress,
+  );
 
   reply.setCookie("refreshToken", response.refreshToken, {
     httpOnly: true,
@@ -100,9 +104,9 @@ export const logoutUserController = async (
   request: FastifyRequest,
   reply: FastifyReply,
 ) => {
-  const token = request.refreshToken || "unknown";
+  const rawRefreshToken = request.cookies.refreshToken || "unknown";
 
-  const response = await logoutUser(token);
+  const response = await logoutUser(rawRefreshToken);
 
   reply.clearCookie("refreshToken", {
     httpOnly: true,
@@ -117,11 +121,18 @@ export const logoutUserController = async (
   });
 };
 
+interface AuthenticatedUser {
+  id: string;
+  email: string;
+  role: "user" | "admin";
+  isVerified: boolean;
+}
+
 export const getUserDataController = async (
   request: FastifyRequest,
   reply: FastifyReply,
 ) => {
-  const data = await getUserData(request.user as object);
+  const data = await getUserData(request.user as AuthenticatedUser);
 
   return reply.status(200).send({
     success: true,
