@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import errorHandler from "./middlewares/errorHandler.ts";
 import { authRoutes } from "./modules/auth/auth.routes.ts";
+import { projectRoutes } from "./modules/projects/project.routes.ts";
 import fastifyCookie from "@fastify/cookie";
 import { ENV } from "./config/env.ts";
 
@@ -29,5 +30,9 @@ app.get("/", async () => {
 });
 
 app.register(authRoutes, {
-  prefix: "/api/auth",
+  prefix: "/api/v1/auth",
+});
+
+app.register(projectRoutes, {
+  prefix: "/api/v1/projects",
 });
