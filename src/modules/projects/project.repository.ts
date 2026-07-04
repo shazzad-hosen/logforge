@@ -18,4 +18,18 @@ export const findProjectByUserIdAndName = async (
   });
 };
 
-
+export const createUniqueProject = async (
+  userId: string,
+  name: string,
+  apiKeySecretHash: string,
+  description?: string,
+) => {
+  return prisma.project.create({
+    data: {
+      userId,
+      name,
+      apiKeySecretHash,
+      description,
+    },
+  });
+};
