@@ -38,11 +38,13 @@ model RefreshToken {
 
 model Project {
     id               String   @id @default(cuid())
-    name             String   @unique
+    name             String
     description      String?
     apiKeySecretHash String   @unique
     userId           String
     user             User     @relation(fields: [userId], references: [id])
     createdAt        DateTime @default(now())
     updatedAt        DateTime @updatedAt
+
+    @@unique([userId, name])
 }
