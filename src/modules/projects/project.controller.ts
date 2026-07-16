@@ -31,8 +31,6 @@ export const createProjectController = async (
   return reply.status(201).send({
     success: true,
     message: "Project created successfully",
-    project: {
-      
-    }
+    ...project
   });
 };

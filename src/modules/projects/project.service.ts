@@ -11,33 +11,31 @@ export const createProject = async (
   name: string,
   description?: string,
 ) => {
-  if (!userId || !name) {
+  if (!name || !userId) {
     throw new ApiError(400, "All fields are required");
   }
 
   const existingProject = await findProjectByUserIdAndName(userId, name);
 
   if (existingProject) {
-    throw new ApiError(409, "Duplicate project names are not allowed");
+    throw new ApiError(409, "You already have a project with this name");
   }
 
   const apiKey = generateApiKey();
 
   const apiKeySecretHash = generateApiKeyHash(apiKey);
 
-  const project = await createUniqueProject(
+  const data = await createUniqueProject({
     userId,
     name,
     apiKeySecretHash,
     description,
-  );
+  });
 
   return {
-    id: project.id,
-    name: project.name,
-    description: project.description,
-    userId: project.userId,
-    createdAt: project.createdAt,
-    apiKey,
+    project: {
+      data,
+      apiKey,
+    },
   };
 };
