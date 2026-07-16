@@ -6,8 +6,10 @@ export const findProjectByUserIdAndName = async (
 ) => {
   return prisma.project.findUnique({
     where: {
-      name,
-      userId,
+      userId_name: {
+        userId,
+        name,
+      },
     },
     select: {
       id: true,
@@ -18,18 +20,22 @@ export const findProjectByUserIdAndName = async (
   });
 };
 
-export const createUniqueProject = async (
-  userId: string,
-  name: string,
-  apiKeySecretHash: string,
-  description?: string,
-) => {
+type CreateProjectInput = {
+  userId: string;
+  name: string;
+  apiKeySecretHash: string;
+  description?: string;
+};
+
+export const createUniqueProject = async (input: CreateProjectInput) => {
   return prisma.project.create({
-    data: {
-      userId,
-      name,
-      apiKeySecretHash,
-      description,
+    data: input,
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      userId: true,
+      createdAt: true,
     },
   });
 };
