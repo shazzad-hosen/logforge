@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { createProjectSchema } from "./project.schema.ts";
-import { createProject } from "./project.service.ts";
+
+import { createProject, getProjects } from "./project.service.ts";
 
 interface AuthenticatedUser {
   id: string;
@@ -32,5 +33,19 @@ export const createProjectController = async (
     success: true,
     message: "Project created successfully",
     ...project,
+  });
+};
+
+export const getProjectsController = async (
+  request: FastifyRequest,
+  reply: FastifyReply,
+) => {
+  const user = request.user as AuthenticatedUser;
+
+  const projects = await getProjects(user.id);
+
+  return reply.status(200).send({
+    success: true,
+    ...projects,
   });
 };
