@@ -1,6 +1,10 @@
 import { FastifyInstance } from "fastify";
-import { createProjectController } from "./project.controller.ts";
 import authenticateAccessToken from "../auth/middlewares/authenticateAccessToken.middleware.ts";
+
+import {
+  createProjectController,
+  getProjectsController,
+} from "./project.controller.ts";
 
 export const projectRoutes = async (app: FastifyInstance) => {
   app.route({
@@ -8,5 +12,12 @@ export const projectRoutes = async (app: FastifyInstance) => {
     url: "/",
     preHandler: authenticateAccessToken,
     handler: createProjectController,
+  });
+
+  app.route({
+    method: "GET",
+    url: "/",
+    preHandler: authenticateAccessToken,
+    handler: getProjectsController,
   });
 };
