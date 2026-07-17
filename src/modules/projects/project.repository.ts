@@ -1,9 +1,12 @@
 import { prisma } from "../../plugins/prisma.ts";
 
-export const findProjectByUserIdAndName = async (
-  name: string,
-  userId: string,
-) => {
+export const findProjectByUserIdAndName = async ({
+  name,
+  userId,
+}: {
+  name: string;
+  userId: string;
+}) => {
   return prisma.project.findUnique({
     where: {
       userId_name: {

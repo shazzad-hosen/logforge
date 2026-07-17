@@ -15,7 +15,7 @@ export const createProject = async (
     throw new ApiError(400, "All fields are required");
   }
 
-  const existingProject = await findProjectByUserIdAndName(userId, name);
+  const existingProject = await findProjectByUserIdAndName({ name, userId });
 
   if (existingProject) {
     throw new ApiError(409, "You already have a project with this name");
