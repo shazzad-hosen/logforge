@@ -42,3 +42,30 @@ export const createUniqueProject = async (input: CreateProjectInput) => {
     },
   });
 };
+
+export const findProjectsByUserId = async (userId: string) => {
+  const [projects, total] = await prisma.$transaction([
+    prisma.project.findMany({
+      where: {
+        userId,
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    }),
+    prisma.project.count({
+      where: {
+        userId,
+      },
+    }),
+  ]);
+
+  return {
+    projects,
+    total,
+  };
+};
