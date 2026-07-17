@@ -4,6 +4,7 @@ import { generateApiKey, generateApiKeyHash } from "./utils/apiKey.ts";
 import {
   findProjectByUserIdAndName,
   createUniqueProject,
+  findProjectsByUserId,
 } from "./project.repository.ts";
 
 export const createProject = async (
@@ -37,5 +38,14 @@ export const createProject = async (
       data,
       apiKey,
     },
+  };
+};
+
+export const getProjects = async (userId: string) => {
+  const data = await findProjectsByUserId(userId);
+
+  return {
+    total: data.total,
+    projects: data.projects,
   };
 };
