@@ -1,7 +1,9 @@
 import crypto from "crypto";
 
 export const generateApiKey = () => {
-  return crypto.randomBytes(32).toString("hex");
+  const key = `sk_${crypto.randomBytes(32).toString("hex")}`;
+
+  return key;
 };
 
 export const generateApiKeyHash = (apiKey: string) => {
