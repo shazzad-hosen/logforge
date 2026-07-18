@@ -4,6 +4,7 @@ import authenticateAccessToken from "../auth/middlewares/authenticateAccessToken
 import {
   createProjectController,
   getProjectsController,
+  getDistinctProjectController,
 } from "./project.controller.ts";
 
 export const projectRoutes = async (app: FastifyInstance) => {
@@ -19,5 +20,12 @@ export const projectRoutes = async (app: FastifyInstance) => {
     url: "/",
     preHandler: authenticateAccessToken,
     handler: getProjectsController,
+  });
+
+  app.route({
+    method: "POST",
+    url: "/:projectId",
+    preHandler: authenticateAccessToken,
+    handler: getDistinctProjectController,
   });
 };
