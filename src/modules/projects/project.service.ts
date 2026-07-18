@@ -5,6 +5,7 @@ import {
   findProjectByUserIdAndName,
   createUniqueProject,
   findProjectsByUserId,
+  findProjectByIdAndUserId,
 } from "./project.repository.ts";
 
 export const createProject = async (
@@ -47,5 +48,17 @@ export const getProjects = async (userId: string) => {
   return {
     total: data.total,
     projects: data.projects,
+  };
+};
+
+export const getDistinctProject = async (userId: string, projectId: string) => {
+  const project = await findProjectByIdAndUserId({ userId, projectId });
+
+  if (!project) {
+    throw new ApiError(404, "Project doesn't exist");
+  }
+
+  return {
+    project,
   };
 };
