@@ -69,3 +69,25 @@ export const findProjectsByUserId = async (userId: string) => {
     total,
   };
 };
+
+export const findProjectByIdAndUserId = async ({
+  userId,
+  projectId,
+}: {
+  userId: string;
+  projectId: string;
+}) => {
+  return prisma.project.findUnique({
+    where: {
+      userId,
+      id: projectId,
+    },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+};
