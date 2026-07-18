@@ -1,7 +1,11 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { createProjectSchema } from "./project.schema.ts";
 
-import { createProject, getProjects } from "./project.service.ts";
+import {
+  createProject,
+  getProjects,
+  getDistinctProject,
+} from "./project.service.ts";
 
 interface AuthenticatedUser {
   id: string;
@@ -47,5 +51,24 @@ export const getProjectsController = async (
   return reply.status(200).send({
     success: true,
     ...projects,
+  });
+};
+
+interface RequestParams {
+  projectId: string;
+}
+
+export const getDistinctProjectController = async (
+  request: FastifyRequest,
+  reply: FastifyReply,
+) => {
+  const user = request.user as AuthenticatedUser;
+  const { projectId } = request.params as RequestParams;
+
+  const project = await getDistinctProject(user.id, projectId);
+
+  return reply.status(200).send({
+    success: true,
+    ...project,
   });
 };
