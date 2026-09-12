@@ -6,6 +6,7 @@ import {
   createUniqueProject,
   findProjectsByUserId,
   findProjectByIdAndUserId,
+  markProjectasDeletedByIdAndUserId,
 } from "./project.repository.ts";
 
 export const createProject = async (
@@ -60,5 +61,26 @@ export const getDistinctProject = async (userId: string, projectId: string) => {
 
   return {
     project,
+  };
+};
+
+export const deleteProject = async (userId: string, projectId: string) => {
+  const project = await findProjectByIdAndUserId({ userId, projectId });
+
+  if (!project) {
+    throw new ApiError(404, "Project doesn't exist");
+  }
+
+  if (project.deletedAt) {
+    return;
+  }
+
+  const deletedProject = await markProjectasDeletedByIdAndUserId({
+    userId,
+    projectId,
+  });
+
+  return {
+    deletedProject,
   };
 };
