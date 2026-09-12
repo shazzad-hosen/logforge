@@ -5,6 +5,7 @@ import {
   createProjectController,
   getProjectsController,
   getDistinctProjectController,
+  deleteProjectController,
 } from "./project.controller.ts";
 
 export const projectRoutes = async (app: FastifyInstance) => {
@@ -27,5 +28,12 @@ export const projectRoutes = async (app: FastifyInstance) => {
     url: "/:projectId",
     preHandler: authenticateAccessToken,
     handler: getDistinctProjectController,
+  });
+
+  app.route({
+    method: "DELETE",
+    url: "/:projectId",
+    preHandler: authenticateAccessToken,
+    handler: deleteProjectController,
   });
 };
