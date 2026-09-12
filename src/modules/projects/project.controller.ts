@@ -5,6 +5,7 @@ import {
   createProject,
   getProjects,
   getDistinctProject,
+  deleteProject,
 } from "./project.service.ts";
 
 interface AuthenticatedUser {
@@ -70,5 +71,20 @@ export const getDistinctProjectController = async (
   return reply.status(200).send({
     success: true,
     ...project,
+  });
+};
+
+export const deleteProjectController = async (
+  request: FastifyRequest,
+  reply: FastifyReply,
+) => {
+  const user = request.user as AuthenticatedUser;
+  const { projectId } = request.params as RequestParams;
+
+  await deleteProject(user.id, projectId);
+
+  return reply.status(204).send({
+    success: true,
+    message: "Project deleted successfull",
   });
 };
