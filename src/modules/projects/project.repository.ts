@@ -88,6 +88,33 @@ export const findProjectByIdAndUserId = async ({
       description: true,
       createdAt: true,
       updatedAt: true,
+      deletedAt: true,
+    },
+  });
+};
+
+export const markProjectasDeletedByIdAndUserId = async ({
+  userId,
+  projectId,
+}: {
+  userId: string;
+  projectId: string;
+}) => {
+  return prisma.project.updateManyAndReturn({
+    where: {
+      userId,
+      id: projectId,
+    },
+    data: {
+      deletedAt: new Date(),
+    },
+    select: {
+      id: true,
+      name: true,
+      userId: true,
+      description: true,
+      createdAt: true,
+      deletedAt: true,
     },
   });
 };
