@@ -1,5 +1,6 @@
 import { FastifyError, FastifyRequest, FastifyReply } from "fastify";
-import { ENV } from "../config/env.ts";
+import { Prisma } from "../generated/prisma/client.ts";
+import ApiError from "../utils/ApiError.ts";
 
 const errorHandler = (
   error: FastifyError,
@@ -8,14 +9,48 @@ const errorHandler = (
 ) => {
   request.log.error(error);
 
-  const statusCode = error.statusCode || 500;
-  const message = error.message || "Internal server error";
+  let message = "Internal server error";
+  let statusCode = 500;
+
+  if (error instanceof ApiError) {
+    statusCode = error.statusCode;
+    message = error.message;
+  }
+
+  // common prisma errors
+  else if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    switch (error.code) {
+      case "P2002":
+        statusCode = 409;
+        message = "A record with the same unique value already exists.";
+        break;
+
+      case "P2025":
+        statusCode = 404;
+        message = "Resource not found.";
+        break;
+
+      case "P2003":
+        statusCode = 409;
+        message = "Foreign key constraint failed.";
+        break;
+
+      default:
+        statusCode = 500;
+        message = "Database error.";
+    }
+  }
+
+  // normal http errors
+  else if (error.statusCode) {
+    statusCode = error.statusCode;
+    message = error.message;
+  }
 
   reply.status(statusCode).send({
     success: false,
     statusCode,
     message,
-    ...(ENV.NODE_ENV === "development" && { stack: error.stack }),
   });
 };
 

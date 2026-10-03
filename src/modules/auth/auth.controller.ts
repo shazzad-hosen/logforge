@@ -30,6 +30,7 @@ export const registerUserController = async (
   const user = await registerUser(email, password);
 
   return reply.status(201).send({
+    success: true,
     message: "User created successfully",
     user,
   });

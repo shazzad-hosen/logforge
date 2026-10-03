@@ -1,4 +1,3 @@
-import { dmmfToRuntimeDataModel } from "@prisma/client/runtime/client";
 import { prisma } from "../../../plugins/prisma.ts";
 
 export const createRefreshToken = async (
