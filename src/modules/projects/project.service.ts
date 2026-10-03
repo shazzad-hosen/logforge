@@ -7,6 +7,7 @@ import {
   findProjectsByUserId,
   findProjectByIdAndUserId,
   markProjectasDeletedByIdAndUserId,
+  updateProjectApiKeyHash,
 } from "./project.repository.ts";
 
 export const createProject = async (
@@ -75,12 +76,40 @@ export const deleteProject = async (userId: string, projectId: string) => {
     return;
   }
 
-  const deletedProject = await markProjectasDeletedByIdAndUserId({
+  await markProjectasDeletedByIdAndUserId({
     userId,
     projectId,
   });
 
   return {
-    deletedProject,
+    message: "Project deleted successfully",
+  };
+};
+
+export const regenerateProjectApiKey = async (
+  userId: string,
+  projectId: string,
+) => {
+  const project = await findProjectByIdAndUserId({ userId, projectId });
+
+  if (!project) {
+    throw new ApiError(404, "Project doesn't exist");
+  }
+
+  if (project.deletedAt) {
+    throw new ApiError(404, "Project doesn't exist");
+  }
+
+  const apiKey = generateApiKey();
+  const apiKeySecretHash = generateApiKeyHash(apiKey);
+
+  await updateProjectApiKeyHash({
+    userId,
+    projectId,
+    apiKeySecretHash,
+  });
+
+  return {
+    apiKey,
   };
 };
