@@ -6,6 +6,7 @@ import {
   getProjects,
   getDistinctProject,
   deleteProject,
+  regenerateProjectApiKey,
 } from "./project.service.ts";
 
 interface AuthenticatedUser {
@@ -85,6 +86,21 @@ export const deleteProjectController = async (
 
   return reply.status(204).send({
     success: true,
-    message: "Project deleted successfull",
+  });
+};
+
+export const regenerateProjectApiKeyController = async (
+  request: FastifyRequest,
+  reply: FastifyReply,
+) => {
+  const user = request.user as AuthenticatedUser;
+  const { projectId } = request.params as RequestParams;
+
+  const result = await regenerateProjectApiKey(user.id, projectId);
+
+  return reply.status(200).send({
+    success: true,
+    message: "API key regenerated successfully",
+    apiKey: result.apiKey,
   });
 };
