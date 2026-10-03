@@ -104,6 +104,7 @@ export const markProjectasDeletedByIdAndUserId = async ({
     where: {
       userId,
       id: projectId,
+      deletedAt: null,
     },
     data: {
       deletedAt: new Date(),
@@ -115,6 +116,33 @@ export const markProjectasDeletedByIdAndUserId = async ({
       description: true,
       createdAt: true,
       deletedAt: true,
+    },
+  });
+};
+
+export const updateProjectApiKeyHash = async ({
+  userId,
+  projectId,
+  apiKeySecretHash,
+}: {
+  userId: string;
+  projectId: string;
+  apiKeySecretHash: string;
+}) => {
+  return prisma.project.updateManyAndReturn({
+    where: {
+      userId,
+      id: projectId,
+      deletedAt: null,
+    },
+    data: {
+      apiKeySecretHash,
+    },
+    select: {
+      id: true,
+      userId: true,
+      createdAt: true,
+      updatedAt: true,
     },
   });
 };
